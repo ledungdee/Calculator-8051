@@ -4,10 +4,10 @@
 DINH NGHIA MA TRAN [ROW][COL]
 */
 unsigned char  KEY_4X4[4][4]=
-								{':','9','8','7',	//// TAI (ROW 1, COL1) LA SO 3,(ROW 1, COL2) LA SO 2,(ROW 1, COL3) LA SO 1,(ROW 1, COL4) LA SO 0
-								 'X','6','5','4',	//// TAI (ROW 2, COL1) LA SO 7,(ROW 2, COL2) LA SO 6,(ROW 2, COL3) LA SO 5,(ROW 2, COL4) LA SO 4
-								 '-','3','2','1',
-								 '+','=','0','C'};
+								{'7','8','9',':',	//// TAI (ROW 1, COL1) LA SO 3,(ROW 1, COL2) LA SO 2,(ROW 1, COL3) LA SO 1,(ROW 1, COL4) LA SO 0
+								 '4','5','6','X',	//// TAI (ROW 2, COL1) LA SO 7,(ROW 2, COL2) LA SO 6,(ROW 2, COL3) LA SO 5,(ROW 2, COL4) LA SO 4
+								 '1','2','3','-',
+								 'C','0','=','+'};
 /*******************************************************************************
 Noi Dung    : Kiem tra xem co phim tren ma tran phim 4x4 duoc nhan khong.
 Tham Bien   : Khong.

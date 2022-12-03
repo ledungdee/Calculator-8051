@@ -1,7 +1,7 @@
 #ifndef _MAIN_H_
 #define _MAIN_H_
 
-#define FREQ_OSC 11059200ul
+#define FREQ_OSC 12000000ul
 //===========================KHAI BAO CAC THU VIEN CAN SU DUNG==================//
 #include <REGX52.H>
 #include <math.h>

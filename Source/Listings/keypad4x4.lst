@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   KEYPAD4X4                                                         12/03/2022 19:41:24 PAGE 1   
+C51 COMPILER V9.60.0.0   KEYPAD4X4                                                         12/04/2022 03:40:44 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE KEYPAD4X4
@@ -14,12 +14,12 @@ line level    source
    4          DINH NGHIA MA TRAN [ROW][COL]
    5          */
    6          unsigned char  KEY_4X4[4][4]=
-   7                          {':','9','8','7', //// TAI (ROW 1, COL1) LA SO 3,(ROW 1, COL2) LA SO 2,(ROW 1, COL3) LA SO 1,(ROW 
+   7                          {'7','8','9',':', //// TAI (ROW 1, COL1) LA SO 3,(ROW 1, COL2) LA SO 2,(ROW 1, COL3) LA SO 1,(ROW 
              -1, COL4) LA SO 0
-   8                           'X','6','5','4', //// TAI (ROW 2, COL1) LA SO 7,(ROW 2, COL2) LA SO 6,(ROW 2, COL3) LA SO 5,(ROW 
+   8                           '4','5','6','X', //// TAI (ROW 2, COL1) LA SO 7,(ROW 2, COL2) LA SO 6,(ROW 2, COL3) LA SO 5,(ROW 
              -2, COL4) LA SO 4
-   9                           '-','3','2','1',
-  10                           '+','=','0','C'};
+   9                           '1','2','3','-',
+  10                           'C','0','=','+'};
   11          /*******************************************************************************
   12          Noi Dung    : Kiem tra xem co phim tren ma tran phim 4x4 duoc nhan khong.
   13          Tham Bien   : Khong.
@@ -62,7 +62,7 @@ line level    source
   50   1        else if(Col==4)
   51   1        {
   52   2          COL4=0;
-C51 COMPILER V9.60.0.0   KEYPAD4X4                                                         12/03/2022 19:41:24 PAGE 2   
+C51 COMPILER V9.60.0.0   KEYPAD4X4                                                         12/04/2022 03:40:44 PAGE 2   
 
   53   2        }
   54   1      }
@@ -126,7 +126,7 @@ line level    source
  112   1          COL4=0;
  113   1          //ban dau cho ROW =1
  114   1          ROW1=1;
-C51 COMPILER V9.60.0.0   KEYPAD4X4                                                         12/03/2022 19:41:24 PAGE 3   
+C51 COMPILER V9.60.0.0   KEYPAD4X4                                                         12/04/2022 03:40:44 PAGE 3   
 
  115   1          ROW2=1;
  116   1          ROW3=1;
