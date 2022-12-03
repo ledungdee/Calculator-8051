@@ -1,0 +1,148 @@
+C51 COMPILER V9.60.0.0   KEYPAD4X4                                                         12/03/2022 19:41:24 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE KEYPAD4X4
+OBJECT MODULE PLACED IN .\Objects\keypad4x4.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE keypad4x4.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings
+                    -\keypad4x4.lst) TABS(2) OBJECT(.\Objects\keypad4x4.obj)
+
+line level    source
+
+   1          #include "keypad4x4.h"
+   2          //DINH NGHIA CAC PHIM NHAN
+   3          /*
+   4          DINH NGHIA MA TRAN [ROW][COL]
+   5          */
+   6          unsigned char  KEY_4X4[4][4]=
+   7                          {':','9','8','7', //// TAI (ROW 1, COL1) LA SO 3,(ROW 1, COL2) LA SO 2,(ROW 1, COL3) LA SO 1,(ROW 
+             -1, COL4) LA SO 0
+   8                           'X','6','5','4', //// TAI (ROW 2, COL1) LA SO 7,(ROW 2, COL2) LA SO 6,(ROW 2, COL3) LA SO 5,(ROW 
+             -2, COL4) LA SO 4
+   9                           '-','3','2','1',
+  10                           '+','=','0','C'};
+  11          /*******************************************************************************
+  12          Noi Dung    : Kiem tra xem co phim tren ma tran phim 4x4 duoc nhan khong.
+  13          Tham Bien   : Khong.
+  14          Tra Ve      : 1 : Co phim tren MTP4x4 duoc bam.
+  15                        0 : Khong co phim tren MTP4x4 duoc bam.
+  16          ********************************************************************************/
+  17                           
+  18          unsigned char  KEY4X4_Push(void)
+  19          {
+  20   1      
+  21   1        if((ROW1==0)|(ROW2==0)|(ROW3==0)|(ROW4==0))
+  22   1          return 1;
+  23   1        else 
+  24   1          return 0;
+  25   1      }
+  26          /*******************************************************************************
+  27          Noi Dung    : Quet tung cot tren MTP4x4.
+  28          Tham Bien   : COL : cot can quet.
+  29          Tra Ve      : Khong.
+  30          ********************************************************************************/
+  31          
+  32          void KEY4X4_CheckCol(unsigned char Col)
+  33          {
+  34   1          COL1=1;
+  35   1          COL2=1;
+  36   1          COL3=1;
+  37   1          COL4=1;
+  38   1        if(Col==1)
+  39   1        {
+  40   2          COL1=0;
+  41   2        }
+  42   1        else if(Col==2)
+  43   1        {
+  44   2          COL2=0;
+  45   2        }
+  46   1        else if(Col==3)
+  47   1        {
+  48   2          COL3=0;
+  49   2        }
+  50   1        else if(Col==4)
+  51   1        {
+  52   2          COL4=0;
+C51 COMPILER V9.60.0.0   KEYPAD4X4                                                         12/03/2022 19:41:24 PAGE 2   
+
+  53   2        }
+  54   1      }
+  55          
+  56          /*******************************************************************************
+  57          Noi Dung    : Doc va tra ve gia tri phim duoc bam tren MTP4x4.
+  58          Tham Bien   : Khong.
+  59          Tra Ve      : Gia tri phim duoc bam.
+  60          ********************************************************************************/
+  61          
+  62          unsigned char KEY4X4_GetKey(void)
+  63          {
+  64   1        unsigned char i;
+  65   1        //cho COL1 den COL4 =0
+  66   1          COL1=0;
+  67   1          COL2=0;
+  68   1          COL3=0;
+  69   1          COL4=0;
+  70   1        if(KEY4X4_Push()==1)//phat hien co phim nhan
+  71   1        {
+  72   2          delay_ms(1);//chong nhieu
+  73   2          if(KEY4X4_Push()==1)//xac dinh chac chan co nhan
+  74   2          {     
+  75   3            for(i=1;i<5;i++)//quet COL1 den COL3
+  76   3            {       
+  77   4              KEY4X4_CheckCol(i);
+  78   4              
+  79   4              if(ROW1==0)//neu hang thu 1 co nhan (ROW1)
+  80   4                {
+  81   5                  return KEY_4X4[0][i-1]; //tra ve ky tu nhan o ROW1 va COL quet tu COL1 den COL4
+  82   5                }
+  83   4              else if(ROW2==0)//neu hang thu 2 co nhan (ROW2)
+  84   4                {
+  85   5                  return KEY_4X4[1][i-1];//tra ve ky tu nhan o ROW2 va COL quet tu COL1 den COL4
+  86   5                }
+  87   4              else if(ROW3==0)//neu hang thu 2 co nhan (ROW2)
+  88   4                { 
+  89   5                  return KEY_4X4[2][i-1];//tra ve ky tu nhan o ROW3 va COL quet tu COL1 den COL4
+  90   5                }
+  91   4                  
+  92   4              else if(ROW4==0)//neu hang thu 2 co nhan (ROW2)
+  93   4                {
+  94   5                  return KEY_4X4[3][i-1];//tra ve ky tu nhan o ROW4 va COL quet tu COL1 den COL4
+  95   5                }
+  96   4            }     
+  97   3          }
+  98   2        }
+  99   1        return 0;//khong co nhan
+ 100   1      }
+ 101          /*******************************************************************************
+ 102          Noi Dung      :   Khai bao cac chan cua phim nhan 4x4
+ 103          Tham Bien     :   Khong.
+ 104          Tra Ve        :   Khong.
+ 105          *******************************************************************************/
+ 106          void Keypad_Init()
+ 107            {
+ 108   1          //ban dau cho COL =0
+ 109   1          COL1=0;
+ 110   1          COL2=0;
+ 111   1          COL3=0;
+ 112   1          COL4=0;
+ 113   1          //ban dau cho ROW =1
+ 114   1          ROW1=1;
+C51 COMPILER V9.60.0.0   KEYPAD4X4                                                         12/03/2022 19:41:24 PAGE 3   
+
+ 115   1          ROW2=1;
+ 116   1          ROW3=1;
+ 117   1          ROW4=1;
+ 118   1        }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    199    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     16    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

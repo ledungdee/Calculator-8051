@@ -1,0 +1,6 @@
+".\Objects\main.obj",
+".\Objects\lcd.obj",
+".\Objects\delay.obj",
+".\Objects\keypad4x4.obj" 
+TO ".\Objects\Calculator-8051" 
+PRINT(".\Listings\Calculator-8051.m51") RAMSIZE(256) 
