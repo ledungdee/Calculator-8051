@@ -19,6 +19,7 @@ sbit ROW4=P1^7;
 unsigned char KEY4X4_Push(void);
 void KEY4X4_CheckCol(unsigned char Col);
 unsigned char KEY4X4_GetKey(void);
-void Keypad_Init(void);
+void KEY4X4_Init(void);
+
 
 #endif

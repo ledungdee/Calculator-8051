@@ -26,4 +26,7 @@ void LCD_PutString (unsigned char *s); 						// hien thi chuoi ky tu ra LCD
 void LCD_Number(unsigned long number,unsigned char leng);//ham viet mot chuoi so len LCD16x2
 void LCD_control_blink_xy(unsigned char x, unsigned char y);	//hàm hien thi con tro nhap nhay
 void LCD_control_off_xy(unsigned char x, unsigned char y);	//hàm tat con tro nhap nhay
+
+void LCD_Clear_Blink();
+
 #endif

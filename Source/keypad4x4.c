@@ -103,7 +103,7 @@ Noi Dung      :   Khai bao cac chan cua phim nhan 4x4
 Tham Bien     :   Khong.
 Tra Ve        :   Khong.
 *******************************************************************************/
-void Keypad_Init()
+void Key4X4_Init()
 	{
 		//ban dau cho COL =0
 		COL1=0;

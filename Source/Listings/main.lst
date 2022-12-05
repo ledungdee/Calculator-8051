@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   MAIN                                                              12/04/2022 04:29:22 PAGE 1   
+C51 COMPILER V9.60.0.0   MAIN                                                              12/05/2022 20:06:10 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE MAIN
@@ -8,128 +8,240 @@ COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE 
 
 line level    source
 
-   1          //===========================khai bao cac thu vien can su dung==============//
-   2          #include<main.h>
+   1          
+   2            #include<main.h>
    3          
-   4          void reset_var();
-   5          void reverse(char* str, int len);
-   6          int intToStr(int x, char str[], int d);
-   7          void ftoa(float n, char* res, int afterpoint);
-   8          
-   9          
-  10          unsigned char key=0;
-  11          idata char buff_input[20];          // Bo nho dem buff, Luu bien vung max 26
-  12          idata char buff_result[10];
-  13          //volatile int pointer =0;
-  14          
-  15          void main()
-  16          {
-  17   1            LCD_Init();         //Thiet lap cau hinh cho LCD
-  18   1        delay_ms(10);
-  19   1            //Keypad_Init();      //goi ham khai bao cac chan ma tran phim 4x4
-  20   1            LCD_Clear();
-  21   1            delay_ms(10);
-  22   1            LCD_Gotoxy(0,0);
-  23   1        delay_ms(10);
-  24   1            LCD_PutString("Hi there!");
-  25   1            delay_ms(500);
-  26   1            reset_var();
-  27   1        delay_ms(10);
-  28   1        
-  29   1            while(1)
-  30   1              {
-  31   2                  key = KEY4X4_GetKey();    //nhan thu tu phím nhan
-  32   2                  if (key!=0)               //phat hien co phim nhan
-  33   2                    {
-  34   3                      if (key !='C')
-  35   3                        {
-  36   4                          LCD_PutChar(key); //hien thi ky tu phim ta LCD
-  37   4                          
-  38   4                          delay_ms(200);
-  39   4                        }
-  40   3                      else 
-  41   3                          reset_var();
-  42   3                    } 
-  43   2              }
-  44   1      }
-  45          void reset_var()
-  46          {
-  47   1        LCD_Clear();
-  48   1        LCD_control_blink_xy(0,0);
-  49   1        
-  50   1      }
-  51          // Reverses a string 'str' of length 'len'
-  52          void reverse(char* str, int len)
-  53          {
-  54   1        int i = 0, j = len - 1, temp;
-C51 COMPILER V9.60.0.0   MAIN                                                              12/04/2022 04:29:22 PAGE 2   
+   4            /*================================Funtion prototype=========================================*/
+   5            void extract_buff();
+   6            void calc();
+   7            void disp();
+   8            void reset_buff();
+   9            void reverse(char* str, int len);
+  10            int intToStr(int x, char str[], int d);
+  11            void ftoa(float n, char* res, int afterpoint);
+  12            float round(float soCanLamTron, int chuSo);
+  13            
+  14            /*========================================END=================================================*/
+  15            
+  16            
+  17            
+  18            /*====================================Variables==============================================*/
+  19            /*Data (252.1B) include: Idata (131Bytes) + Data (remain 16bytes) + etc...
+  20            xdata: rat nhieu
+  21            float, double, long double,long, unsigned long = 4 bytes
+  22            int: 2bytes
+  23            char, usigned char: 1byte
+  24            xdata volatile int pointer =0;
+  25          
+  26            max float 32750 => Du 16bit nhung phai sd bit lam bit dau, exp, k dc luu tai xdata\
+  27            buff result cung k dc luu tai xdata
+  28            data float kq = 320.967545454; 
+  29            */
+  30            
+  31            
+  32            idata unsigned char buff[25];   // Buffer save string of eqution
+  33            idata unsigned char tt1[10];
+  34            idata unsigned char tt2[10];    // Two string buffers save two oprerants of Equation
+  35            idata volatile int pointer = 0; //Pointer to devide buff string
+  36            idata unsigned char buff_result[20];  //Ket qua dc luu vao mang ki tu
+  37            idata unsigned char error[]= "Math Error";
+  38            idata int flag_error = 0;
+  39            
+  40            data float f_operant = 0;
+  41            data float l_operant = 0;     //Two interger for store two oprerants in float
+  42            data unsigned char sign;      // Store sign of equation
+  43            data float result = 0;        // Store the result
+  44            data unsigned char key = 0;   // Where key pressed is located 
+  45            /*==========================================END===============================================*/
+  46          
+  47          void main()
+  48          {
+  49   1        //ftoa(kq,n,4);   
+  50   1        //KEY4X4_Init();        //goi ham khai bao cac chan ma tran phim 4x4
+  51   1        reset_buff();
+  52   1        LCD_Init();           //Thiet lap cau hinh cho LCD
+  53   1        LCD_Clear();
+  54   1        LCD_Gotoxy(0,0);
+C51 COMPILER V9.60.0.0   MAIN                                                              12/05/2022 20:06:10 PAGE 2   
 
-  55   1        while (i < j) {
-  56   2          temp = str[i];
-  57   2          str[i] = str[j];
-  58   2          str[j] = temp;
-  59   2          i++;
-  60   2          j--;
-  61   2        }
-  62   1      }
-  63          
-  64          // Converts a given integer x to string str[].
-  65          // d is the number of digits required in the output.
-  66          // If d is more than the number of digits in x,
-  67          // then 0s are added at the beginning.
-  68          int intToStr(int x, char str[], int d)
-  69          {
-  70   1        int i = 0;
-  71   1        while (x) {
-  72   2          str[i++] = (x % 10) + '0';
-  73   2          x = x / 10;
-  74   2        }
-  75   1      
-  76   1        // If number of digits required is more, then
-  77   1        // add 0s at the beginning
-  78   1        while (i < d)
-  79   1          str[i++] = '0';
-  80   1      
-  81   1        reverse(str, i);
-  82   1        str[i] = '\0';
-  83   1        return i;
-  84   1      }
-  85          
-  86          // Converts a floating-point/double number to a string.
-  87          void ftoa(float n, char* res, int afterpoint)
-  88          {
-  89   1        // Extract integer part
-  90   1        int ipart = (int)n;
-  91   1      
-  92   1        // Extract floating part
-  93   1        float fpart = n - (float)ipart;
-  94   1      
-  95   1        // convert integer part to string
-  96   1        int i = intToStr(ipart, res, 0);
-  97   1      
-  98   1        // check for display option after point
-  99   1        if (afterpoint != 0) {
- 100   2          res[i] = '.'; // add dot
- 101   2      
- 102   2          // Get the value of fraction part upto given no.
- 103   2          // of points after dot. The third parameter
- 104   2          // is needed to handle cases like 233.007
- 105   2          fpart = fpart * pow(10, afterpoint);
- 106   2      
- 107   2          intToStr((int)fpart, res + i + 1, afterpoint);
- 108   2        }
- 109   1      }
+  55   1        LCD_PutString("Hi there!");
+  56   1        //LCD_PutChar(sign);
+  57   1        delay_ms(1500);
+  58   1        LCD_Clear_Blink();
+  59   1        while(1)
+  60   1        {
+  61   2          key = KEY4X4_GetKey();      //nhan thu tu phim nhan
+  62   2          if (key!=0){                //phat hien co phim nhan
+  63   3            if (key !='C'){
+  64   4              LCD_PutChar(key); 
+  65   4              delay_ms(250);
+  66   4              buff[pointer] = key;
+  67   4              pointer++;
+  68   4              if (key =='='){
+  69   5                extract_buff();
+  70   5                calc();
+  71   5                disp();
+  72   5                reset_buff();       //Tinh xong xoa bo nho dem
+  73   5              }
+  74   4            }
+  75   3            else{ 
+  76   4              LCD_Clear_Blink();  //Nhan C => Xoa man hinh
+  77   4              reset_buff();
+  78   4            }
+  79   3          } 
+  80   2        }
+  81   1      }
+  82          
+  83          void extract_buff(){ 
+  84   1        int k = 0;
+  85   1        pointer = 0;          // 656565+65545=
+  86   1        
+  87   1        while(buff[pointer]!='+'&&buff[pointer]!='-'&&buff[pointer]!='X'&&buff[pointer]!=':'){
+  88   2          tt1[pointer] = buff[pointer];
+  89   2          pointer++;
+  90   2        }
+  91   1        sign = buff[pointer];
+  92   1        pointer++;
+  93   1        k = pointer;
+  94   1        while(buff[pointer] != '='){
+  95   2          tt2[pointer - k] = buff[pointer];
+  96   2          pointer++;
+  97   2        }
+  98   1      }
+  99          
+ 100          void calc(){
+ 101   1        f_operant = atoi(tt1);
+ 102   1        l_operant = atoi(tt2);
+ 103   1        switch (sign){
+ 104   2          case '+':
+ 105   2            result = f_operant + l_operant;
+ 106   2            break;
+ 107   2          case '-':
+ 108   2            result = f_operant - l_operant;
+ 109   2            break;
+ 110   2          case 'X':
+ 111   2            result = f_operant * l_operant;
+ 112   2            break;
+ 113   2          case ':':
+ 114   2            if (l_operant !=0){
+ 115   3            result = f_operant / l_operant;
+ 116   3            }
+C51 COMPILER V9.60.0.0   MAIN                                                              12/05/2022 20:06:10 PAGE 3   
+
+ 117   2            else flag_error = 1;
+ 118   2            break;      
+ 119   2        }
+ 120   1        
+ 121   1        if (sign =='/'){
+ 122   2          result = round(result,4);
+ 123   2        }
+ 124   1      
+ 125   1        ftoa(result,buff_result,4);
+ 126   1      }
+ 127          float round(float soCanLamTron, int chuSo)
+ 128          {
+ 129   1          int temp;
+ 130   1          int i, result = 1;
+ 131   1         
+ 132   1          //Pow
+ 133   1          for(i = 1; i <= chuSo; i++)
+ 134   1          {
+ 135   2              result *= 10;
+ 136   2          }
+ 137   1         
+ 138   1          temp = soCanLamTron*result;
+ 139   1          if(temp%10 >= 5)
+ 140   1          {
+ 141   2              temp += 1;
+ 142   2          }
+ 143   1          soCanLamTron = (float)temp/result;
+ 144   1          return soCanLamTron;
+ 145   1      } 
+ 146          void reset_buff(){
+ 147   1        memset(buff,0,strlen(buff));
+ 148   1        memset(tt1,0,strlen(tt1));
+ 149   1        memset(tt2,0,strlen(tt2));
+ 150   1        memset(buff_result,0,strlen(buff_result));
+ 151   1        sign = 'n';
+ 152   1        pointer = 0;
+ 153   1        flag_error = 0;
+ 154   1      }
+ 155          
+ 156          void disp(){
+ 157   1        if (flag_error == 0){
+ 158   2          LCD_Clear();
+ 159   2          LCD_Gotoxy(0,1);
+ 160   2          LCD_PutString(buff_result);
+ 161   2        }
+ 162   1        else{
+ 163   2          LCD_Clear();
+ 164   2          LCD_control_off_xy(0,0);
+ 165   2          LCD_PutString(error);
+ 166   2        }
+ 167   1      }
+ 168          
+ 169            
+ 170          // Reverses a string 'str' of length 'length'
+ 171          void reverse(char* str, int len)
+ 172          {
+ 173   1        int i = 0, j = len - 1, temp;
+ 174   1        while (i < j) {
+ 175   2          temp = str[i];
+ 176   2          str[i] = str[j];
+ 177   2          str[j] = temp;
+ 178   2          i++;
+C51 COMPILER V9.60.0.0   MAIN                                                              12/05/2022 20:06:10 PAGE 4   
+
+ 179   2          j--;
+ 180   2        }
+ 181   1      }
+ 182          
+ 183          // Converts a given integer x to string str[].
+ 184          // d is the number of digits required in the output.
+ 185          // If d is more than the number of digits in x,
+ 186          // then 0s are added at the beginning.
+ 187          int intToStr(int x, char str[], int d){
+ 188   1        int i = 0;
+ 189   1        while (x) {
+ 190   2        str[i++] = (x % 10) + '0';
+ 191   2        x = x / 10;
+ 192   2      }
+ 193   1      
+ 194   1      // If number of digits required is more, then
+ 195   1      // add 0s at the beginning
+ 196   1      while (i < d) str[i++] = '0';
+ 197   1      reverse(str, i);
+ 198   1      str[i] = '\0';
+ 199   1      return i;
+ 200   1      }
+ 201          
+ 202          // Converts a floating-point/double number to a string.
+ 203          void ftoa(float n, char* res, int afterpoint){
+ 204   1      // Extract integer part
+ 205   1      int ipart = (int)n;
+ 206   1      // Extract floating part
+ 207   1      float fpart = n - (float)ipart;
+ 208   1      // convert integer part to string
+ 209   1      int i = intToStr(ipart, res, 0);
+ 210   1      // check for display option after point
+ 211   1      if (afterpoint != 0){
+ 212   2        res[i] = '.'; // add dot
+ 213   2        // Get the value of fraction part upto given no.
+ 214   2        // of points after dot. The third parameter
+ 215   2        // is needed to handle cases like 233.007
+ 216   2        fpart = fpart * pow(10, afterpoint);
+ 217   2        intToStr((int)fpart, res + i + 1, afterpoint);
+ 218   2      }
+ 219   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    537    ----
+   CODE SIZE        =   1221    ----
    CONSTANT SIZE    =     10    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-C51 COMPILER V9.60.0.0   MAIN                                                              12/04/2022 04:29:22 PAGE 3   
-
-   DATA SIZE        =      1      35
-   IDATA SIZE       =     30    ----
+   DATA SIZE        =     14      43
+   IDATA SIZE       =     80    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.
 
