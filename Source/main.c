@@ -3,14 +3,15 @@
 
 	/*================================Funtion prototype=========================================*/
 	void extract_buff();
-	void calc();
-	void disp();
+	void calc_disp();
 	void reset_buff();
 	void reverse(char* str, int len);
 	int intToStr(int x, char str[], int d);
 	void ftoa(float n, char* res, int afterpoint);
-	float round(float soCanLamTron, int chuSo);
-	
+	double round(double soCanLamTron, int chuSo);
+	void xuly();
+	void disp_error();
+	void disp_over();
 	/*========================================END=================================================*/
 	
 	
@@ -23,7 +24,7 @@
 	char, usigned char: 1byte
 	xdata volatile int pointer =0;
 
-	max float 32750 => Du 16bit nhung phai sd bit lam bit dau, exp, k dc luu tai xdata\
+	max float 32767 => Du 16bit nhung phai sd bit lam bit dau, exp, k dc luu tai xdata\
 	buff result cung k dc luu tai xdata
 	data float kq = 320.967545454; 
 	*/
@@ -33,9 +34,12 @@
 	idata unsigned char tt1[10];
 	idata unsigned char tt2[10]; 		// Two string buffers save two oprerants of Equation
 	idata volatile int pointer = 0;	//Pointer to devide buff string
-	idata unsigned char buff_result[20];	//Ket qua dc luu vao mang ki tu
+	idata unsigned char buff_result[10];	//Ket qua dc luu vao mang ki tu
 	idata unsigned char error[]= "Math Error";
 	idata int flag_error = 0;
+	idata int negative = 0;
+	idata int over_mem = 0;
+	idata unsigned char over_mes[]="Memory Over";
 	
 	data float f_operant = 0;
 	data float l_operant = 0;			//Two interger for store two oprerants in float
@@ -46,15 +50,12 @@
 
 void main()
 {
-	//ftoa(kq,n,4);		
-	//KEY4X4_Init();				//goi ham khai bao cac chan ma tran phim 4x4
 	reset_buff();
 	LCD_Init();   				//Thiet lap cau hinh cho LCD
 	LCD_Clear();
 	LCD_Gotoxy(0,0);
 	LCD_PutString("Hi there!");
-	//LCD_PutChar(sign);
-	delay_ms(1500);
+	delay_ms(1000);
 	LCD_Clear_Blink();
 	while(1)
 	{
@@ -67,8 +68,7 @@ void main()
 				pointer++;
 				if (key =='='){
 					extract_buff();
-					calc();
-					disp();
+					calc_disp();
 					reset_buff();				//Tinh xong xoa bo nho dem
 				}
 			}
@@ -97,9 +97,12 @@ void extract_buff(){
 	}
 }
 
-void calc(){
+void calc_disp(){
+	int i = 0;
+	idata unsigned char verify[10];
 	f_operant = atoi(tt1);
 	l_operant = atoi(tt2);
+	
 	switch (sign){
 		case '+':
 			result = f_operant + l_operant;
@@ -115,16 +118,57 @@ void calc(){
 			result = f_operant / l_operant;
 			}
 			else flag_error = 1;
-			break;			
+			break;
+		default:
+			flag_error = 1;
 	}
-	
-	if (sign =='/'){
-		result = round(result,4);
+	ftoa(result,verify,3);
+	for (i=0;i<=strlen(verify);i++){
+		if (verify[i] == '/'||verify[i] == '+'||verify[i] == '-')
+			over_mem = 1;
 	}
 
-	ftoa(result,buff_result,4);
+	if (sign == '/'){
+		result = round(result,3);
+		xuly();
+	}
+	else
+		xuly();
+	memset(verify,0,strlen(verify));
 }
-float round(float soCanLamTron, int chuSo)
+void xuly(){
+		if (result < 0 && flag_error == 0 && over_mem == 0){
+			result = -result;
+			ftoa(result,buff_result,3);
+			//LCD_Clear();
+			LCD_control_off_xy(0,1);
+			LCD_PutChar('-');
+			LCD_PutString(buff_result);
+		}
+		else if(result >=0 && flag_error == 0 && over_mem == 0){
+			ftoa(result,buff_result,3);
+			//LCD_Clear();
+			LCD_control_off_xy(0,1);
+			LCD_PutString(buff_result);
+		}
+		else {
+			if (over_mem == 1 && flag_error == 0)
+				disp_over();
+			else
+				disp_error();
+		}
+}
+void disp_error(){
+	LCD_Clear();
+	LCD_control_off_xy(0,0);
+	LCD_PutString(error);
+}
+void disp_over(){
+	LCD_Clear();
+	LCD_control_off_xy(0,0);
+	LCD_PutString(over_mes);
+}
+double round(double soCanLamTron, int chuSo)
 {
     int temp;
     int i, result = 1;
@@ -134,15 +178,14 @@ float round(float soCanLamTron, int chuSo)
     {
         result *= 10;
     }
-   
     temp = soCanLamTron*result;
     if(temp%10 >= 5)
     {
         temp += 1;
     }
-    soCanLamTron = (float)temp/result;
+    soCanLamTron = (double)temp/result;
     return soCanLamTron;
-}	
+}
 void reset_buff(){
 	memset(buff,0,strlen(buff));
 	memset(tt1,0,strlen(tt1));
@@ -151,21 +194,8 @@ void reset_buff(){
 	sign = 'n';
 	pointer = 0;
 	flag_error = 0;
+	over_mem = 0;
 }
-
-void disp(){
-	if (flag_error == 0){
-		LCD_Clear();
-		LCD_Gotoxy(0,1);
-		LCD_PutString(buff_result);
-	}
-	else{
-		LCD_Clear();
-		LCD_control_off_xy(0,0);
-		LCD_PutString(error);
-	}
-}
-
 	
 // Reverses a string 'str' of length 'length'
 void reverse(char* str, int len)

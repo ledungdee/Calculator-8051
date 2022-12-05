@@ -8,7 +8,7 @@ Tra Ve        :   Khong.
  void LCD_Enable(void)
 {
     LCD_EN=1;//cho chan EN len muc cao
-    delay_us(3);
+    delay_us(30);
 		LCD_EN=0;//cho chân EN xuong muc thap
     delay_us(50);
 }
@@ -24,7 +24,6 @@ Tra Ve        :   Khong.
 		LCD_D5 = (_data>>1)&1;//=>dich sang phai 1 bit roi xuat ra bit thu 2
 		LCD_D6 = (_data>>2)&1;//=>dich sang phai 1 bit roi xuat ra bit thu 3
 		LCD_D7 = (_data>>3)&1;//=>dich sang phai 1 bit roi xuat ra bit thu 4
-		delay_ms(10);
 }
  /*******************************************************************************
 Noi Dung    :   Gui 1 byte du lieu den LCD.
@@ -46,7 +45,6 @@ void LCD_SendCommand (unsigned char  command,unsigned char reg )
 		LCD_Enable () ;
 		LCD_Send4Bit  ( command  );      /* Gui 4 bit thap*/
 		LCD_Enable () ;
-	 delay_ms(10);
 }
 /*******************************************************************************
 Noi Dung     :   Xoa noi dung hien thi tren LCD16X2.
@@ -57,7 +55,6 @@ void LCD_Clear()
 {
     LCD_SendCommand(0x01,0);// goi lenh dieu khien LCD
     delay_ms(5);
-		delay_ms(10);
 }
 /*******************************************************************************
 Noi Dung     :   Khoi tao LCD16X2.
@@ -78,7 +75,6 @@ Tra Ve       :   Khong.
     LCD_SendCommand(0x28,0);// ghi lenh: giao thuc 4 bit, hien thi 2 hang, ki tu 5x7
     LCD_SendCommand(0x0C,0);// ghi lenh: cho phep hien thi man hinh
     LCD_Clear();           // xoa toan bo khung hinh
-		delay_ms(10);
 }
 /*******************************************************************************
 Noi Dung     :   Thiet lap vi tri con tro LCD16X2.
@@ -96,7 +92,6 @@ void LCD_Gotoxy(unsigned char x, unsigned char y)
 
   delay_ms(5);
   LCD_SendCommand(address,0);	//ghi lenh dieu khien LCD
-	delay_ms(10);
 }
 /*******************************************************************************
 Noi Dung    :   Viet 1 ki tu len LCD16X2.
@@ -106,7 +101,7 @@ Tra Ve      :   Khong.
  void LCD_PutChar (unsigned char _data )
 {
     LCD_SendCommand(_data,1);// ghi du lieu
-		delay_ms(5);
+		delay_us(5);
 
 }
 /*******************************************************************************
@@ -122,7 +117,6 @@ void LCD_PutString (unsigned char *s)
         LCD_PutChar(*s);
         s++;
     }
-		delay_ms(10);
 }
 /*******************************************************************************
 Noi Dung    :   Hin thi so len LCD16X2.
@@ -146,7 +140,6 @@ unsigned char temp;
 	{
 		LCD_SendCommand(CacKyTu[leng-1-i] + 48,1);
 	}
-	delay_ms(10);
 }
 /*******************************************************************************
 Noi Dung    :   hàm hien thi con tro nhap nhay
@@ -158,7 +151,6 @@ void LCD_control_blink_xy(unsigned char x, unsigned char y)
 {
 		LCD_Gotoxy(x,y);
 		LCD_SendCommand(0x0f,0);
-		delay_ms(10);
 }
 /*******************************************************************************
 Noi Dung    :   hàm tat con tro nhap nhay
@@ -170,7 +162,6 @@ void LCD_control_off_xy(unsigned char x, unsigned char y)
 {
 	LCD_Gotoxy(x,y);
 	LCD_SendCommand(0x0E,0);
-	delay_ms(10);
 }
 
 /*******************************************************************************

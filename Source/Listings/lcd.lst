@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   LCD                                                               12/04/2022 19:13:39 PAGE 1   
+C51 COMPILER V9.60.0.0   LCD                                                               12/05/2022 22:41:34 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE LCD
@@ -18,7 +18,7 @@ line level    source
    8           void LCD_Enable(void)
    9          {
   10   1          LCD_EN=1;//cho chan EN len muc cao
-  11   1          delay_us(3);
+  11   1          delay_us(30);
   12   1          LCD_EN=0;//cho chân EN xuong muc thap
   13   1          delay_us(50);
   14   1      }
@@ -34,176 +34,167 @@ line level    source
   24   1          LCD_D5 = (_data>>1)&1;//=>dich sang phai 1 bit roi xuat ra bit thu 2
   25   1          LCD_D6 = (_data>>2)&1;//=>dich sang phai 1 bit roi xuat ra bit thu 3
   26   1          LCD_D7 = (_data>>3)&1;//=>dich sang phai 1 bit roi xuat ra bit thu 4
-  27   1          delay_ms(10);
-  28   1      }
-  29           /*******************************************************************************
-  30          Noi Dung    :   Gui 1 byte du lieu den LCD.
-  31          Tham Bien   :   command: byte du lieu can goi; reg chon thanh ghi lenh hay du lieu
-  32          Tra Ve      :   Khong.
-  33          ********************************************************************************/
-  34          
-  35          void LCD_SendCommand (unsigned char  command,unsigned char reg )
-  36          {
-  37   1         if(reg==0)//reg=0 hay chan RS=0 thi chon thanh ghi lenh
-  38   1         {
-  39   2          LCD_RS=0; // chon thanh ghi lenh
-  40   2         }
-  41   1        else//reg=1 hay RS=1 chon thanh ghi du lieu
-  42   1         {
-  43   2          LCD_RS=1;   // chon thanh ghi du lieu
-  44   2         }
-  45   1          LCD_Send4Bit  ( command >>4 );   /* Gui 4 bit cao */
-  46   1          LCD_Enable () ;
-  47   1          LCD_Send4Bit  ( command  );      /* Gui 4 bit thap*/
-  48   1          LCD_Enable () ;
-  49   1         delay_ms(10);
-  50   1      }
-  51          /*******************************************************************************
-  52          Noi Dung     :   Xoa noi dung hien thi tren LCD16X2.
-  53          Tham Bien    :   Khong.
-  54          Tra Ve       :   Khong.
-C51 COMPILER V9.60.0.0   LCD                                                               12/04/2022 19:13:39 PAGE 2   
+  27   1      }
+  28           /*******************************************************************************
+  29          Noi Dung    :   Gui 1 byte du lieu den LCD.
+  30          Tham Bien   :   command: byte du lieu can goi; reg chon thanh ghi lenh hay du lieu
+  31          Tra Ve      :   Khong.
+  32          ********************************************************************************/
+  33          
+  34          void LCD_SendCommand (unsigned char  command,unsigned char reg )
+  35          {
+  36   1         if(reg==0)//reg=0 hay chan RS=0 thi chon thanh ghi lenh
+  37   1         {
+  38   2          LCD_RS=0; // chon thanh ghi lenh
+  39   2         }
+  40   1        else//reg=1 hay RS=1 chon thanh ghi du lieu
+  41   1         {
+  42   2          LCD_RS=1;   // chon thanh ghi du lieu
+  43   2         }
+  44   1          LCD_Send4Bit  ( command >>4 );   /* Gui 4 bit cao */
+  45   1          LCD_Enable () ;
+  46   1          LCD_Send4Bit  ( command  );      /* Gui 4 bit thap*/
+  47   1          LCD_Enable () ;
+  48   1      }
+  49          /*******************************************************************************
+  50          Noi Dung     :   Xoa noi dung hien thi tren LCD16X2.
+  51          Tham Bien    :   Khong.
+  52          Tra Ve       :   Khong.
+  53          ********************************************************************************/
+  54          void LCD_Clear()
+C51 COMPILER V9.60.0.0   LCD                                                               12/05/2022 22:41:34 PAGE 2   
 
-  55          ********************************************************************************/
-  56          void LCD_Clear()
-  57          {
-  58   1          LCD_SendCommand(0x01,0);// goi lenh dieu khien LCD
-  59   1          delay_ms(5);
-  60   1          delay_ms(10);
-  61   1      }
-  62          /*******************************************************************************
-  63          Noi Dung     :   Khoi tao LCD16X2.
-  64          Tham Bien    :   Khong.
-  65          Tra Ve       :   Khong.
-  66          *******************************************************************************/
-  67           void LCD_Init ( void )
-  68          {
-  69   1          LCD_RS=0;
-  70   1          LCD_RW=0;
-  71   1          LCD_EN=0;
-  72   1          LCD_Send4Bit(0x03);// goi du lieu cho LCD16x2 kieu mat dinh, dua con tro ve dau dong dau tien
+  55          {
+  56   1          LCD_SendCommand(0x01,0);// goi lenh dieu khien LCD
+  57   1          delay_ms(5);
+  58   1      }
+  59          /*******************************************************************************
+  60          Noi Dung     :   Khoi tao LCD16X2.
+  61          Tham Bien    :   Khong.
+  62          Tra Ve       :   Khong.
+  63          *******************************************************************************/
+  64           void LCD_Init ( void )
+  65          {
+  66   1          LCD_RS=0;
+  67   1          LCD_RW=0;
+  68   1          LCD_EN=0;
+  69   1          LCD_Send4Bit(0x03);// goi du lieu cho LCD16x2 kieu mat dinh, dua con tro ve dau dong dau tien
+  70   1          LCD_Enable();
+  71   1          delay_us(10);
+  72   1          LCD_Send4Bit(0x02);// goi du lieu cho LCD16x2 kieu mat dinh, dua con tro ve dau dong dau tien
   73   1          LCD_Enable();
   74   1          delay_us(10);
-  75   1          LCD_Send4Bit(0x02);// goi du lieu cho LCD16x2 kieu mat dinh, dua con tro ve dau dong dau tien
-  76   1          LCD_Enable();
-  77   1          delay_us(10);
-  78   1          LCD_SendCommand(0x28,0);// ghi lenh: giao thuc 4 bit, hien thi 2 hang, ki tu 5x7
-  79   1          LCD_SendCommand(0x0C,0);// ghi lenh: cho phep hien thi man hinh
-  80   1          LCD_Clear();           // xoa toan bo khung hinh
-  81   1          delay_ms(10);
-  82   1      }
-  83          /*******************************************************************************
-  84          Noi Dung     :   Thiet lap vi tri con tro LCD16X2.
-  85          Tham Bien    :   x: vi tri cot cua con tro. x = 0 -> 15.
-  86                           y: vi tri hang cua con tro. y= 0,1.
-  87          Tra Ve       :   Khong.
-  88          ********************************************************************************/
-  89          void LCD_Gotoxy(unsigned char x, unsigned char y)
-  90          {
-  91   1        unsigned char  address;
-  92   1        if(!y)
-  93   1              address = (0x80+x);
-  94   1        else
-  95   1              address = (0xC0+x);
-  96   1      
-  97   1        delay_ms(5);
-  98   1        LCD_SendCommand(address,0); //ghi lenh dieu khien LCD
-  99   1        delay_ms(10);
- 100   1      }
- 101          /*******************************************************************************
- 102          Noi Dung    :   Viet 1 ki tu len LCD16X2.
- 103          Tham Bien   :   Data  :   Gia tri ki tu can hien thi.
- 104          Tra Ve      :   Khong.
- 105          ********************************************************************************/
- 106           void LCD_PutChar (unsigned char _data )
- 107          {
- 108   1          LCD_SendCommand(_data,1);// ghi du lieu
- 109   1          delay_ms(5);
- 110   1      
- 111   1      }
- 112          /*******************************************************************************
- 113          Noi Dung    :   Viet 1 chuoi ki tu len LCD16X2.
- 114          Tham Bien   :   *s   :  chuoi du lieu can hien thi.
- 115          Tra Ve      :   Khong.
- 116          ********************************************************************************/
-C51 COMPILER V9.60.0.0   LCD                                                               12/04/2022 19:13:39 PAGE 3   
+  75   1          LCD_SendCommand(0x28,0);// ghi lenh: giao thuc 4 bit, hien thi 2 hang, ki tu 5x7
+  76   1          LCD_SendCommand(0x0C,0);// ghi lenh: cho phep hien thi man hinh
+  77   1          LCD_Clear();           // xoa toan bo khung hinh
+  78   1      }
+  79          /*******************************************************************************
+  80          Noi Dung     :   Thiet lap vi tri con tro LCD16X2.
+  81          Tham Bien    :   x: vi tri cot cua con tro. x = 0 -> 15.
+  82                           y: vi tri hang cua con tro. y= 0,1.
+  83          Tra Ve       :   Khong.
+  84          ********************************************************************************/
+  85          void LCD_Gotoxy(unsigned char x, unsigned char y)
+  86          {
+  87   1        unsigned char  address;
+  88   1        if(!y)
+  89   1              address = (0x80+x);
+  90   1        else
+  91   1              address = (0xC0+x);
+  92   1      
+  93   1        delay_ms(5);
+  94   1        LCD_SendCommand(address,0); //ghi lenh dieu khien LCD
+  95   1      }
+  96          /*******************************************************************************
+  97          Noi Dung    :   Viet 1 ki tu len LCD16X2.
+  98          Tham Bien   :   Data  :   Gia tri ki tu can hien thi.
+  99          Tra Ve      :   Khong.
+ 100          ********************************************************************************/
+ 101           void LCD_PutChar (unsigned char _data )
+ 102          {
+ 103   1          LCD_SendCommand(_data,1);// ghi du lieu
+ 104   1          delay_us(5);
+ 105   1      
+ 106   1      }
+ 107          /*******************************************************************************
+ 108          Noi Dung    :   Viet 1 chuoi ki tu len LCD16X2.
+ 109          Tham Bien   :   *s   :  chuoi du lieu can hien thi.
+ 110          Tra Ve      :   Khong.
+ 111          ********************************************************************************/
+ 112          void LCD_PutString (unsigned char *s)
+ 113          {
+ 114   1      
+ 115   1          while (*s)
+ 116   1          {
+C51 COMPILER V9.60.0.0   LCD                                                               12/05/2022 22:41:34 PAGE 3   
 
- 117          void LCD_PutString (unsigned char *s)
- 118          {
- 119   1      
- 120   1          while (*s)
- 121   1          {
- 122   2              LCD_PutChar(*s);
- 123   2              s++;
- 124   2          }
- 125   1          delay_ms(10);
- 126   1      }
- 127          /*******************************************************************************
- 128          Noi Dung    :   Hin thi so len LCD16X2.
- 129          Tham Bien   :   number  : so can hien thi, leng la chieu dai cua chuoi so
- 130          Tra Ve      :   Khong.
- 131          ********************************************************************************/
- 132          void LCD_Number(unsigned long number,unsigned char leng)
- 133          {
- 134   1      //leng la chieu dai cua chuoi so
- 135   1      unsigned char i;
- 136   1      char CacKyTu[20];//mang chua cac ky tu so
- 137   1      unsigned char temp;
- 138   1      
+ 117   2              LCD_PutChar(*s);
+ 118   2              s++;
+ 119   2          }
+ 120   1      }
+ 121          /*******************************************************************************
+ 122          Noi Dung    :   Hin thi so len LCD16X2.
+ 123          Tham Bien   :   number  : so can hien thi, leng la chieu dai cua chuoi so
+ 124          Tra Ve      :   Khong.
+ 125          ********************************************************************************/
+ 126          void LCD_Number(unsigned long number,unsigned char leng)
+ 127          {
+ 128   1      //leng la chieu dai cua chuoi so
+ 129   1      unsigned char i;
+ 130   1      char CacKyTu[20];//mang chua cac ky tu so
+ 131   1      unsigned char temp;
+ 132   1      
+ 133   1        for(i=0; i<leng; i++)
+ 134   1        {
+ 135   2          temp = number % 10;
+ 136   2          number = number/10;
+ 137   2          CacKyTu[i] = temp;
+ 138   2        }
  139   1        for(i=0; i<leng; i++)
  140   1        {
- 141   2          temp = number % 10;
- 142   2          number = number/10;
- 143   2          CacKyTu[i] = temp;
- 144   2        }
- 145   1        for(i=0; i<leng; i++)
- 146   1        {
- 147   2          LCD_SendCommand(CacKyTu[leng-1-i] + 48,1);
- 148   2        }
- 149   1        delay_ms(10);
- 150   1      }
- 151          /*******************************************************************************
- 152          Noi Dung    :   hàm hien thi con tro nhap nhay
- 153          Tham Bien    :   x: vi tri cot cua con tro. x = 0 -> 15.
- 154                           y: vi tri hang cua con tro. y= 0,1.
- 155          Tra Ve      :   Khong.
- 156          ********************************************************************************/
- 157          void LCD_control_blink_xy(unsigned char x, unsigned char y)
- 158          {
- 159   1          LCD_Gotoxy(x,y);
- 160   1          LCD_SendCommand(0x0f,0);
- 161   1          delay_ms(10);
- 162   1      }
- 163          /*******************************************************************************
- 164          Noi Dung    :   hàm tat con tro nhap nhay
- 165          Tham Bien    :   x: vi tri cot cua con tro. x = 0 -> 15.
- 166                           y: vi tri hang cua con tro. y= 0,1.
- 167          Tra Ve      :   Khong.
- 168          ********************************************************************************/
- 169          void LCD_control_off_xy(unsigned char x, unsigned char y)
- 170          {
- 171   1        LCD_Gotoxy(x,y);
- 172   1        LCD_SendCommand(0x0E,0);
- 173   1        delay_ms(10);
- 174   1      }
- 175          
- 176          /*******************************************************************************
- 177          Noi Dung    :   hàm tat con tro nhap nhay
- 178          Tham Bien    :   x: vi tri cot cua con tro. x = 0 -> 15.
-C51 COMPILER V9.60.0.0   LCD                                                               12/04/2022 19:13:39 PAGE 4   
+ 141   2          LCD_SendCommand(CacKyTu[leng-1-i] + 48,1);
+ 142   2        }
+ 143   1      }
+ 144          /*******************************************************************************
+ 145          Noi Dung    :   hàm hien thi con tro nhap nhay
+ 146          Tham Bien    :   x: vi tri cot cua con tro. x = 0 -> 15.
+ 147                           y: vi tri hang cua con tro. y= 0,1.
+ 148          Tra Ve      :   Khong.
+ 149          ********************************************************************************/
+ 150          void LCD_control_blink_xy(unsigned char x, unsigned char y)
+ 151          {
+ 152   1          LCD_Gotoxy(x,y);
+ 153   1          LCD_SendCommand(0x0f,0);
+ 154   1      }
+ 155          /*******************************************************************************
+ 156          Noi Dung    :   hàm tat con tro nhap nhay
+ 157          Tham Bien    :   x: vi tri cot cua con tro. x = 0 -> 15.
+ 158                           y: vi tri hang cua con tro. y= 0,1.
+ 159          Tra Ve      :   Khong.
+ 160          ********************************************************************************/
+ 161          void LCD_control_off_xy(unsigned char x, unsigned char y)
+ 162          {
+ 163   1        LCD_Gotoxy(x,y);
+ 164   1        LCD_SendCommand(0x0E,0);
+ 165   1      }
+ 166          
+ 167          /*******************************************************************************
+ 168          Noi Dung    :   hàm tat con tro nhap nhay
+ 169          Tham Bien    :   x: vi tri cot cua con tro. x = 0 -> 15.
+ 170                           y: vi tri hang cua con tro. y= 0,1.
+ 171          Tra Ve      :   Khong.
+ 172          ********************************************************************************/
+ 173          void LCD_Clear_Blink()
+ 174            {
+ 175   1          LCD_Clear();
+ 176   1          LCD_control_blink_xy(0,0);
+ 177   1        }
 
- 179                           y: vi tri hang cua con tro. y= 0,1.
- 180          Tra Ve      :   Khong.
- 181          ********************************************************************************/
- 182          void LCD_Clear_Blink()
- 183            {
- 184   1          LCD_Clear();
- 185   1          LCD_control_blink_xy(0,0);
- 186   1        }
+C51 COMPILER V9.60.0.0   LCD                                                               12/05/2022 22:41:34 PAGE 4   
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    418    ----
+   CODE SIZE        =    355    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
