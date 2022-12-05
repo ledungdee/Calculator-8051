@@ -119,29 +119,6 @@ void LCD_PutString (unsigned char *s)
     }
 }
 /*******************************************************************************
-Noi Dung    :   Hin thi so len LCD16X2.
-Tham Bien   :   number  : so can hien thi, leng la chieu dai cua chuoi so
-Tra Ve      :   Khong.
-********************************************************************************/
-void LCD_Number(unsigned long number,unsigned char leng)
-{
-//leng la chieu dai cua chuoi so
-unsigned char i;
-char CacKyTu[20];//mang chua cac ky tu so
-unsigned char temp;
-
-	for(i=0; i<leng; i++)
-	{
-		temp = number % 10;
-		number = number/10;
-		CacKyTu[i] = temp;
-	}
-	for(i=0; i<leng; i++)
-	{
-		LCD_SendCommand(CacKyTu[leng-1-i] + 48,1);
-	}
-}
-/*******************************************************************************
 Noi Dung    :   hàm hien thi con tro nhap nhay
 Tham Bien    :   x: vi tri cot cua con tro. x = 0 -> 15.
                  y: vi tri hang cua con tro. y= 0,1.

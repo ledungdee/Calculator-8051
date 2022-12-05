@@ -51,11 +51,14 @@
 void main()
 {
 	reset_buff();
+	KEY4X4_Init();
 	LCD_Init();   				//Thiet lap cau hinh cho LCD
+	
 	LCD_Clear();
 	LCD_Gotoxy(0,0);
 	LCD_PutString("Hi there!");
 	delay_ms(1000);
+	
 	LCD_Clear_Blink();
 	while(1)
 	{
@@ -122,18 +125,20 @@ void calc_disp(){
 		default:
 			flag_error = 1;
 	}
-	ftoa(result,verify,3);
-	for (i=0;i<=strlen(verify);i++){
-		if (verify[i] == '/'||verify[i] == '+'||verify[i] == '-')
-			over_mem = 1;
+	if (result > 0){
+		ftoa(result,verify,3);
+		for (i=0;i<strlen(verify);i++){
+			if (verify[i]=='/'||verify[i]=='+'||verify[i]=='*'||verify[i]==')'||verify[i]=='(')
+				over_mem = 1;
+		}
 	}
-
 	if (sign == '/'){
 		result = round(result,3);
 		xuly();
 	}
 	else
 		xuly();
+	
 	memset(verify,0,strlen(verify));
 }
 void xuly(){
@@ -228,22 +233,21 @@ reverse(str, i);
 str[i] = '\0';
 return i;
 }
-
 // Converts a floating-point/double number to a string.
 void ftoa(float n, char* res, int afterpoint){
-// Extract integer part
-int ipart = (int)n;
-// Extract floating part
-float fpart = n - (float)ipart;
-// convert integer part to string
-int i = intToStr(ipart, res, 0);
-// check for display option after point
-if (afterpoint != 0){
-	res[i] = '.'; // add dot
-	// Get the value of fraction part upto given no.
-	// of points after dot. The third parameter
-	// is needed to handle cases like 233.007
-	fpart = fpart * pow(10, afterpoint);
-	intToStr((int)fpart, res + i + 1, afterpoint);
-}
+	// Extract integer part
+	int ipart = (int)n;
+	// Extract floating part
+	float fpart = n - (float)ipart;
+	// convert integer part to string
+	int i = intToStr(ipart, res, 0);
+	// check for display option after point
+	if (afterpoint != 0){
+		res[i] = '.'; // add dot
+		// Get the value of fraction part upto given no.
+		// of points after dot. The third parameter
+		// is needed to handle cases like 233.007
+		fpart = fpart * pow(10, afterpoint);
+		intToStr((int)fpart, res + i + 1, afterpoint);
+	}
 }
